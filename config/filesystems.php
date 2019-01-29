@@ -63,7 +63,21 @@ return [
             'bucket' => env('AWS_BUCKET'),
             'url' => env('AWS_URL'),
         ],
-
+        'qiniu' => [
+            'driver'  => 'qiniu',
+            'domains' => [
+                'default'   => 'pm1hnnmnv.bkt.clouddn.com',     //你的七牛域名
+                'https'     => 'dn-yourdomain.qbox.me',         //你的HTTPS域名
+                'custom'    => 'static.abc.com',                //Useless 没啥用，请直接使用上面的 default 项
+             ],
+            'access_key'=> 'iUYDMWJVRCjzN2ls1NKOgOOZvXS5cOZG7_Z2pKKz',  //AccessKey
+            'secret_key'=> '0o5NMgxbArmxpp1x1ZtAunb-N2ZyjEmCQvU2E0q-',  //SecretKey
+            'bucket'    => 'dyxs',  //Bucket名字
+            'notify_url'=> '',  //持久化处理回调地址
+            'access'    => 'public',  //空间访问控制 public 或 private
+            'hotlink_prevention_key' => 'afc89ff8bd2axxxxxxxxxxxxxxbb', // CDN 时间戳防盗链的 key。 设置为 null 则不启用本功能。
+//            'hotlink_prevention_key' => 'cbab68a279xxxxxxxxxxab509a', // 同上，备用
+        ],
     ],
 
 ];

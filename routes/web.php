@@ -46,6 +46,6 @@ Route::namespace('Manage')->middleware(['auth', 'dynamic.config'])->group(functi
 
     //宣传片
     Route::resource('xuanchuans', 'XuanchuanController');
-
+    Route::get('xuanchuan/upload_token', 'XuanchuanController@uploadToken');
 
 });
