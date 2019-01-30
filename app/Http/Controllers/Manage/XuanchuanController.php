@@ -21,23 +21,29 @@ class XuanchuanController extends Controller
     {
         $query = Xuanchuan::query();
         $pageMap = [];
+        $project_id =  $this->getUserProject()->id;
 
-        if ($uuid = $request->uuid) {
-            $query->where('uuid', $uuid);
-            $pageMap['uuid'] = $uuid;
-        }
-
-        if ($name = $request->name) {
-            $query->where('name', 'like', "%$name%");
-            $pageMap['name'] = $name;
-        }
-        $xuanchuans = $query->orderBy('created_at', 'DESC')
-            ->where('project_id', $this->getUserProject()->id)
-            ->paginate(request('per_page', 15));
         $disk = QiniuStorage::disk('qiniu');
         $upload_token = $disk->uploadToken();
         $upload_domain = 'http://'.config('filesystems.disks.qiniu.domains.default');
-        return view('manage.xuanchuan.index', compact('xuanchuans', 'pageMap', 'upload_token', 'upload_domain'));
+        $upload_dir = 'org/'.$project_id.'/xuanchuan/';
+        $files = $disk->files($upload_dir);
+        foreach ($files as $file) {
+            $exists = Xuanchuan::where('project_id', $project_id)
+                               ->where('video', $file)->exists();
+            if(!$exists){
+                $xuanchuan = new Xuanchuan();
+                $xuanchuan->project_id = $project_id;
+                $xuanchuan->video = $file;
+                $xuanchuan->save();
+            }
+        }
+
+        $xuanchuans = $query->orderBy('created_at', 'DESC')
+            ->where('project_id', $project_id)
+            ->paginate(request('per_page', 15));
+
+        return view('manage.xuanchuan.index', compact('xuanchuans', 'pageMap', 'upload_token', 'upload_domain', 'upload_dir'));
     }
 
     /**
@@ -45,5 +51,9 @@ class XuanchuanController extends Controller
      */
     public function uploadToken()
     {
+        $disk = QiniuStorage::disk('qiniu');
+        $upload_token = $disk->uploadToken();
+        $upload_domain = 'http://'.config('filesystems.disks.qiniu.domains.default');
+        return ['token' => $upload_token, 'domain' => $upload_domain];
     }
 }

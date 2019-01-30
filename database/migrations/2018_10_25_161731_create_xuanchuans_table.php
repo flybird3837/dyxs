@@ -13,11 +13,11 @@ class CreateXuanchuansTable extends Migration
      */
     public function up()
     {
-        Schema::create('Xuanchuans', function (Blueprint $table) {
+        Schema::create('xuanchuans', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('project_id')->unique();
-            $table->string('name', 50);
-            $table->string('intro');
+            $table->unsignedInteger('project_id');
+            $table->string('name', 50)->nullable();
+            $table->string('intro')->nullable();
             $table->string('video');
             $table->timestamps();
         });
@@ -30,6 +30,6 @@ class CreateXuanchuansTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('Xuanchuans');
+        Schema::dropIfExists('xuanchuans');
     }
 }

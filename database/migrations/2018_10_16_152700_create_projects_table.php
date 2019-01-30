@@ -17,7 +17,7 @@ class CreateProjectsTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('user_id')->nullable()->comment('党组织管理用户');
             $table->string('name')->comment('党组织名称');
-            $table->string('image')->comment('党组织LOGO');
+            $table->string('image')->default(null)->comment('党组织LOGO');
             $table->timestamps();
         });
     }

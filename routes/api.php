@@ -21,5 +21,7 @@ use App\Http\Controllers\Api\ProjectController;
 
 
 Route::namespace('Api')->group(function () {
-    Route::get('project/{project}/{vip?}', "ProjectController@show");
+    Route::get('org', "ProjectController@list");
+    Route::get('org/{project_id}/dangyuan', "ProjectController@dangyuans");
+    Route::get('org/{project_id}/dangyuan/{name}', "ProjectController@dangyuanSearch");
 });

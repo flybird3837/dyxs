@@ -20,18 +20,19 @@
             <section class="panel panel-default">
                 <header class="panel-heading"> 宣传片列表</header>
                 <div class="row text-sm wrapper">
-                    <div class="col-sm-5 m-b-xs">
-
-                    </div>
-                    <div class="col-sm-7">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <span class="pull-right">
-                                    <button id="upload" class="btn btn-info btn-sm fa fa-upload icon">上传</button>
-                                    <button id="select" class="btn btn-info btn-sm fa fa-upload icon">选择</button>
-                                </span>
+                    <div class="col-sm-12">
+                        <span class="pull-right">
+                            <form class="form-inline" role="form" onsubmit="return false"  id="upload_form">
+                            <div class="form-group">
+                                <label id="up_caption"></label>
+                                <div class="progress" style="width:300px;">
+                                  <div id="progress" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuemax="100">0%</div>
+                                </div>
                             </div>
-                        </div>
+                            <button id="upload" class="btn btn-info btn-sm fa fa-upload icon">上传</button>
+                            <button id="select" class="btn btn-info btn-sm fa fa-upload icon">选择</button>
+                            </form>
+                        </span>
                     </div>
                 </div>
                 <div class="table-responsive">
@@ -47,11 +48,12 @@
                         <tbody>
                         @foreach($xuanchuans as $xuanchuan)
                             <tr>
-                                <td><img src="{{$xuanchuan->video}}"/></td>
-                                <td>{{$xuanchuan->name}}</td>
-                                <td>{{$xuanchuan->intro}}</td>
-                                <td>
+                                <td width="15%"><a href="{{$upload_domain}}/{{$xuanchuan->video}}" target="_blank"><img src="{{$upload_domain}}/{{$xuanchuan->video}}?vframe/jpg/offset/1" style="width:100px;height:auto"/></a></td>
+                                <td width="35%">{{$xuanchuan->name}}</td>
+                                <td width="35%">{{$xuanchuan->intro}}</td>
+                                <td width="15%">
                                     @if(auth()->user()->hasRole('project_manage'))
+                                    <a href="{{ route('xuanchuans.edit', ['id' => $xuanchuan->id]) }}">编辑</a>
                                     <a href="{{ route('xuanchuans.edit', ['id' => $xuanchuan->id]) }}">删除</a>
                                     @else
                                     ---
@@ -98,7 +100,7 @@
     };
 
   qiniu.getUploadUrl(config, token).then(function(res){
-    var uploadUrl = res
+    var uploadUrl = res;
     var board = {};
     var indexCount = 0;
     var resume = false;
@@ -112,9 +114,16 @@
       silverlight_xap_url: "./js/plupload/Moxie.xap",
       chunk_size: 4 * 1024 * 1024,
       max_retries: 3,
+      multi_selection: false,
       multipart_params: {
         // token从服务端获取，没有token无法上传
         token: token
+      },
+      filters: { 
+        //max_file_size: '10mb', //最大上传文件大小（格式100b, 10kb, 10mb, 1gb） 
+        mime_types: [//允许文件上传类型 
+            {title: "files", extensions: "mpg,m4v,mp4,flv,3gp,mov,avi,rmvb,mkv,wmv"} 
+        ] 
       },
       init: {
         PostInit: function() {
@@ -122,30 +131,14 @@
         },
         FilesAdded: function(up, files) {
           resume = false;
-          //$("#box input").attr("disabled", "disabled");
           //$("#box button").css("backgroundColor", "#aaaaaa");
           chunk_size = uploader.getOption("chunk_size");
           var id = files[0].id;
-          // 添加上传dom面板
-          //board[id] = addUploadBoard(files[0], config, files[0].name, "2");
-          //board[id].start = true;
-          // 绑定上传按钮开始事件
-          /*$(board[id])
-            .find(".control-upload")
-            .on("click", function() {
-              if (board[id].start) {
+          $('#up_caption').html(files[0].name);
+          $("#upload").attr("disabled", false);
+          $('#upload').on("click", function() {
                 uploader.start();
-                board[id].start = false;
-                $(this).text("取消上传");
-              } else {
-                uploader.stop();
-                board[id].start = true;
-                $(this).text("开始上传");
-              }
-            });*/
-            $('#upload').on("click", function() {
-                uploader.start();
-            });
+          });
         },
         FileUploaded: function(up, file, info) {
           console.log(info);
@@ -164,7 +157,11 @@
       console.log(1234)
     })
     uploader.bind("BeforeUpload", function(uploader, file) {
-      key = file.name;
+      $("#select").attr("disabled", "disabled");
+      $("#upload").attr("disabled", "disabled");
+      $('#up_caption').html(file.name+'上传中...');
+      dir = '{{$upload_dir}}';
+      key = dir + file.name;
       putExtra.params["x:name"] = key.split(".")[0];
       var id = file.id;
       chunk_size = uploader.getOption("chunk_size");
@@ -197,26 +194,6 @@
         var multipart_params_obj = {};
         // 计算已上传的chunk数量
         var index = Math.floor(file.loaded / chunk_size);
-        /*var dom_total = $(board[id])
-          .find("#totalBar")
-          .children("#totalBarColor");
-        if (board[id].start != "reusme") {
-          $(board[id])
-            .find(".fragment-group")
-            .addClass("hide");
-        }
-        dom_total.css(
-          "width",
-          file.percent + "%"
-        );*/
-        // 初始化已上传的chunk进度
-        /*for (var i = 0; i < index; i++) {
-          var dom_finished = $(board[id])
-            .find(".fragment-group li")
-            .eq(i)
-            .find("#childBarColor");
-          dom_finished.css("width", "100%");
-        }*/
 
         var headers = qiniu.getHeadersForChunkUpload(token)
         uploader.setOption({
@@ -229,6 +206,7 @@
           multipart_params: multipart_params_obj
         });
       };
+
       // 判断是否采取分片上传
       if (
         (uploader.runtime === "html5" || uploader.runtime === "flash") &&
@@ -279,22 +257,10 @@
       var id = file.id;
       // 更新进度条进度信息;
       var fileUploaded = file.loaded || 0;
-      /*var dom_total = $(board[id])
-        .find("#totalBar")
-        .children("#totalBarColor");*/
       var percent = file.percent + "%";
+      $('#progress').css('width', percent);
+      $('#progress').html(percent);
       console.log(percent);
-      /*dom_total.css(
-        "width",
-        file.percent + "%"
-      );
-      $(board[id])
-        .find(".speed")
-        .text("进度：" + percent);
-      var count = Math.ceil(file.size / uploader.getOption("chunk_size"));
-      if (file.size > chunk_size) {
-        updateChunkProgress(file, board[id], chunk_size, count);
-      }*/
     });
 
     uploader.bind("FileUploaded", function(uploader, file, info) {
@@ -325,27 +291,13 @@
     }
 
     function uploadFinish(res, name, board) {
-      localStorage.removeItem(name)
-      /*
-      $("#box input").removeAttr("disabled", "disabled");
-      $("#box button").css("backgroundColor", "#00b7ee");
-      $(board)
-        .find("#totalBar")
-        .addClass("hide");
-      $(board)
-        .find(".control-container")
-        .html(
-          "<p><strong>Hash：</strong>" +
-            res.hash +
-            "</p>" +
-            "<p><strong>Bucket：</strong>" +
-            res.bucket +
-            "</p>"
-        );
-      */
-      if (res.key && res.key.match(/\.(jpg|jpeg|png|gif)$/)) {
+        $("#select").attr("disabled", false);
+        $("#upload").attr("disabled", false);
+        $('#up_caption').html(name+'上传完成');
+        localStorage.removeItem(name)
+        if (res.key && res.key.match(/\.(jpg|jpeg|png|gif)$/)) {
         //imageDeal(board, res.key, domain);
-      }
+        }
     }
 
     function initFileInfo(file) {
