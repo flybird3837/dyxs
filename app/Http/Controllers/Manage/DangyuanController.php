@@ -18,7 +18,7 @@ class DangyuanController extends Controller
     private $startRow = 2;
     private $nameCol = 'A';
     private $sexCol = 'B';
-    private $inTimeCol = 'D';
+    private $inTimeCol = 'C';
 
     /**
      * @param Request $request
