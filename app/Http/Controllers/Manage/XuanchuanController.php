@@ -88,10 +88,10 @@ class XuanchuanController extends Controller
         if ($xuanchuan->project_id != $project_id)
             return 2;
         $disk = QiniuStorage::disk('qiniu');
-        $r = $disk->delete($xuanchuan->video); 
+        $disk->delete($xuanchuan->video); 
         $xuanchuan->name = $request->name;
         $xuanchuan->intro = $request->intro;
-        $xuanchuan->save();
+        $xuanchuan->delete();
         return 0;
     }
 }

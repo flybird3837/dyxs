@@ -415,7 +415,7 @@
           dataType: "json",
           success: function success(data) {
               if (data.error != 0) {
-                 // window.location.reload();
+                window.location.reload();
               }
           }
       });
