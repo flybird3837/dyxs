@@ -69,4 +69,17 @@ class ProjectController extends Controller
         $upload_domain = 'http://'.config('filesystems.disks.qiniu.domains.default');
         return ['token' => $upload_token, 'domain' => $upload_domain];
     }
+
+    /**
+    * 七牛回调
+    */
+    public function qiniuCallback(Request $request)
+    {
+        $disk = QiniuStorage::disk('qiniu');
+        $callback = 'http://xuanshi.ninewe.com/api/qiniu/callback';
+        $r = $disk->verifyCallback('application/x-www-form-urlencoded', $request->header('Authorization'), $callback, $request->getContent());//验证回调内容是否合法
+        file_put_contents('/tmp/qiniu.log', var_dump($r), FILE_APPEND);
+        file_put_contents('/tmp/qiniu.log', var_dump($request->getContent()), FILE_APPEND);
+        echo 'ok';
+    }
 }

@@ -27,5 +27,6 @@ Route::namespace('Api')->group(function () {
     Route::get('org/{project_id}/{id}', "ProjectController@dangyuanGet");
     Route::get('org/{project_id}/xuanshi/list', "ProjectController@dangyuanXuanshi");
     Route::get('qiniu/token', "ProjectController@qiniuToken");
+    Route::post('qiniu/callback', "ProjectController@qiniuCallback");
 
 });

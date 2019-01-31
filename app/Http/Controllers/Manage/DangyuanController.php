@@ -9,11 +9,13 @@ use Illuminate\Http\Request;
 use App\Models\Dangyuan;
 use App\Models\DangyuanImport;
 use App\Http\Controllers\Traits\RoleHelper;
+use App\Http\Controllers\Traits\QiniuHelper;
 use Maatwebsite\Excel\Facades\Excel;
+use zgldh\QiniuStorage\QiniuStorage;
 
 class DangyuanController extends Controller
 {
-    use RoleHelper, CleanCache;
+    use RoleHelper, CleanCache, QiniuHelper;
 
     private $startRow = 2;
     private $nameCol = 'A';
@@ -42,6 +44,9 @@ class DangyuanController extends Controller
             ->where('project_id', $this->getUserProject()->id)
             ->paginate(request('per_page', 15));
 
+        $disk = QiniuStorage::disk('qiniu');
+        $files = $disk->files('org/4/dangyuan/1/');
+        print_r($files);
         return view('manage.dangyuan.index', compact('dangyuans', 'pageMap'));
     }
 

@@ -24,7 +24,13 @@ class XuanchuanController extends Controller
         $project_id =  $this->getUserProject()->id;
 
         $disk = QiniuStorage::disk('qiniu');
-        $upload_token = $disk->uploadToken();
+        $policy = [
+            'callbackUrl' => 'http://xuanshi.ninewe.com/api/qiniu/callback',
+            'callbackHost'=> 'xuanshi.ninewe.com',
+            'callbackBody' => '{"key":"$(key)","hash":"$(etag)","w":"$(imageInfo.width)","h":"$(imageInfo.height)"}',
+            'callbackBodyType' => 'application/json'
+        ];
+        $upload_token = $disk->uploadToken(null, 3600, $policy);
         $upload_domain = 'http://'.config('filesystems.disks.qiniu.domains.default');
         $upload_dir = 'org/'.$project_id.'/xuanchuan/';
         $files = $disk->files($upload_dir);
