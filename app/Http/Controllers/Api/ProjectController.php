@@ -65,7 +65,13 @@ class ProjectController extends Controller
     public function qiniuToken(Request $request)
     {
         $disk = QiniuStorage::disk('qiniu');
-        $upload_token = $disk->uploadToken();
+        $policy = [
+            'callbackUrl' => 'http://xuanshi.ninewe.com/api/qiniu/callback',
+            'callbackHost'=> 'xuanshi.ninewe.com',
+            'callbackBody' => '{"key":"$(key)","hash":"$(etag)","w":"$(imageInfo.width)","h":"$(imageInfo.height)"}',
+            'callbackBodyType' => 'application/json'
+        ];
+        $upload_token = $disk->uploadToken(null, 3600, $policy);
         $upload_domain = 'http://'.config('filesystems.disks.qiniu.domains.default');
         return ['token' => $upload_token, 'domain' => $upload_domain];
     }
@@ -103,6 +109,6 @@ class ProjectController extends Controller
         file_put_contents('/tmp/qiniu.log', $request->getContent().PHP_EOL, FILE_APPEND);
         file_put_contents('/tmp/qiniu.log', $request->header('Authorization').PHP_EOL, FILE_APPEND);
         file_put_contents('/tmp/qiniu.log', json_encode($request->all()).PHP_EOL, FILE_APPEND);
-        return ["success" => true, "key" => "sunflowerb.jpg"];
+        return ["success" => true];
     }
 }

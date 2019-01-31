@@ -177,8 +177,7 @@
       $("#upload").attr("disabled", "disabled");
       $('#up_caption').html(file.name+'上传中...');
       dir = '{{$upload_dir}}';
-      //key = dir + file.name;
-      key = dir + 'org/1/dangyuan/100/avatar.png';
+      key = dir + file.name;
       putExtra.params["x:name"] = key.split(".")[0];
       var id = file.id;
       chunk_size = uploader.getOption("chunk_size");
