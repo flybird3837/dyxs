@@ -23,7 +23,7 @@ class ProjectController extends Controller
     */
     public function dangyuans(Request $request, $project_id)
     {
-        return Dangyuan::where('project_id', $project_id)->get();
+        return Dangyuan::where('project_id', $project_id)->paginate(request('per_page', 15));;
     }
 
     /**
