@@ -81,6 +81,25 @@ class ProjectController extends Controller
         if($r){
            file_put_contents('/tmp/qiniu.log', 'OK'.PHP_EOL, FILE_APPEND);
         }
+        $params = explode('/',$request->key);
+        $project_id = intval($params[1]);
+        $id = intval($params[3]);
+        $file = $params[4];
+        $dangyuan = Dangyuan::where('project_id', $project_id)
+                            ->where('id', $id)
+                            ->first();
+        if($dangyuan){
+            $pos = strpos($file, 'avatar');
+            if ($pos !== false) 
+                $dangyuan->image = $request->key;
+            $pos = strpos($file, 'video');
+            if ($pos !== false) 
+                $dangyuan->video = $request->key;
+            $pos = strpos($file, 'audio');
+            if ($pos !== false) 
+                $dangyuan->audio = $request->key;
+            $dangyuan->save();
+        }
         file_put_contents('/tmp/qiniu.log', $request->getContent().PHP_EOL, FILE_APPEND);
         file_put_contents('/tmp/qiniu.log', $request->header('Authorization').PHP_EOL, FILE_APPEND);
         file_put_contents('/tmp/qiniu.log', json_encode($request->all()).PHP_EOL, FILE_APPEND);
