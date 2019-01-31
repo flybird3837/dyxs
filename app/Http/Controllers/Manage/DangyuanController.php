@@ -44,9 +44,6 @@ class DangyuanController extends Controller
             ->where('project_id', $this->getUserProject()->id)
             ->paginate(request('per_page', 15));
 
-        $disk = QiniuStorage::disk('qiniu');
-        $files = $disk->files('org/4/dangyuan/1/');
-        print_r($files);
         return view('manage.dangyuan.index', compact('dangyuans', 'pageMap'));
     }
 
