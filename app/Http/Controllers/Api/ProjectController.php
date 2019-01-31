@@ -7,6 +7,7 @@ use App\Models\Project;
 use App\Models\Dangyuan;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use zgldh\QiniuStorage\QiniuStorage;
 
 class ProjectController extends Controller
 {
@@ -23,7 +24,7 @@ class ProjectController extends Controller
     */
     public function dangyuans(Request $request, $project_id)
     {
-        return Dangyuan::where('project_id', $project_id)->paginate(request('per_page', 15));;
+        return Dangyuan::where('project_id', $project_id)->paginate(request('per_page', 15));
     }
 
     /**
@@ -44,5 +45,28 @@ class ProjectController extends Controller
         return Dangyuan::where('project_id', $project_id)
                        ->where('id', $id)
                        ->first();
+    }
+
+    /**
+    * 宣誓
+    */
+    public function dangyuanXuanshi(Request $request, $project_id)
+    {
+        return Dangyuan::where('project_id', $project_id)
+                       ->whereNotNull('image')
+                       ->whereNotNull('video')
+                       ->whereNotNull('audio')
+                       ->paginate(request('per_page', 15));
+    }
+
+    /**
+    * 七牛token
+    */
+    public function qiniuToken(Request $request)
+    {
+        $disk = QiniuStorage::disk('qiniu');
+        $upload_token = $disk->uploadToken();
+        $upload_domain = 'http://'.config('filesystems.disks.qiniu.domains.default');
+        return ['token' => $upload_token, 'domain' => $upload_domain];
     }
 }
