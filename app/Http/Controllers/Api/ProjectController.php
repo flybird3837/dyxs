@@ -78,7 +78,7 @@ class ProjectController extends Controller
         $disk = QiniuStorage::disk('qiniu');
         $callback = 'http://xuanshi.ninewe.com/api/qiniu/callback';
         $r = $disk->verifyCallback('application/x-www-form-urlencoded', $request->header('Authorization'), $callback, $request->getContent());//验证回调内容是否合法
-        file_put_contents('/tmp/qiniu.log', $r.PHP_EOL, FILE_APPEND);
+        file_put_contents('/tmp/qiniu.log', $request->getContent().PHP_EOL, FILE_APPEND);
         file_put_contents('/tmp/qiniu.log', $request->header('Authorization').PHP_EOL, FILE_APPEND);
         file_put_contents('/tmp/qiniu.log', json_encode($request->all()).PHP_EOL, FILE_APPEND);
         return ["success" => true, "key" => "sunflowerb.jpg"];
