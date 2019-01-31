@@ -46,15 +46,31 @@
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach($xuanchuans as $xuanchuan)
+                        @foreach($xuanchuans as $item)
                             <tr>
-                                <td width="15%"><a href="{{$upload_domain}}/{{$xuanchuan->video}}" target="_blank"><img src="{{$upload_domain}}/{{$xuanchuan->video}}?vframe/jpg/offset/1" style="width:100px;height:auto"/></a></td>
-                                <td width="35%">{{$xuanchuan->name}}</td>
-                                <td width="35%">{{$xuanchuan->intro}}</td>
+                                <td width="15%">
+                                  <a href="{{$upload_domain}}/{{$item->video}}" target="_blank">
+                                    <img src="{{$upload_domain}}/{{$item->video}}?vframe/jpg/offset/1" style="width:50px;height:50px"/>
+                                  </a>
+                                </td>
+                                <td width="35%">
+                                  <span id="name_{{$item->id}}">{{$item->name}}</span>
+                                  <input id="name_input_{{$item->id}}" type="text" class="form-control col-xs-1 input-sm" placeholder="主题" value="{{$item->name}}" style="display:none">
+                                </td>
+                                <td width="35%">
+                                  <span id="intro_{{$item->id}}">{{$item->intro}}</span>
+                                  <input id="intro_input_{{$item->id}}" type="text" class="form-control col-xs-1 input-sm" placeholder="简介" value="{{$item->intro}}" style="display:none">
+                                </td>
                                 <td width="15%">
                                     @if(auth()->user()->hasRole('project_manage'))
-                                    <a href="{{ route('xuanchuans.edit', ['id' => $xuanchuan->id]) }}">编辑</a>
-                                    <a href="{{ route('xuanchuans.edit', ['id' => $xuanchuan->id]) }}">删除</a>
+                                    <span id="manage_{{$item->id}}">
+                                      <a href="javascript:void(0)" onclick="showEdit({{$item->id}})">编辑</a>
+                                      <a href="javascript:void(0)" onclick="del({{$item->id}})">删除</a>
+                                    </span>
+                                    <span id="edit_btn_{{$item->id}}" style="display:none">
+                                        <button type="button" class="btn btn-success btn-sm" onclick="edit({{$item->id}})">提交</button>
+                                        <button type="button" class="btn btn-danger btn-sm" onclick="showEdit({{$item->id}})">取消</button>
+                                    </span>
                                     @else
                                     ---
                                     @endif
@@ -356,6 +372,54 @@
       return new Date().getTime() > expireAt;
     }
   });
+
+  function showEdit(id){
+      $('#name_'+id).toggle();
+      $('#name_input_'+id).toggle();
+      $('#intro_'+id).toggle();
+      $('#intro_input_'+id).toggle();
+      $('#manage_'+id).toggle();
+      $('#edit_btn_'+id).toggle();
+  }
+
+  function edit(id){
+      if ($('#name_input_'+id).val() == ''){
+          alert('请输入主题。');
+          return ;
+      }
+      if ($('#intro_input_'+id).val() == ''){
+          alert('请输入简介。');
+          return ;
+      }
+      $.ajax({
+          url: "/xuanchuan/edit",
+          method: "POST",
+          data: {name:$('#name_input_'+id).val(), intro:$('#intro_input_'+id).val(), id:id},
+          dataType: "json",
+          success: function success(data) {
+              if (data.error != 0) {
+                  window.location.reload();
+              }
+          }
+      });
+  }
+
+  function del(id){
+      if (confirm('确定要删除吗？')==false){
+          return ;
+      }
+      $.ajax({
+          url: "/xuanchuan/del",
+          method: "POST",
+          data: {id:id},
+          dataType: "json",
+          success: function success(data) {
+              if (data.error != 0) {
+                  window.location.reload();
+              }
+          }
+      });
+  }
 
 </script>
 @endsection

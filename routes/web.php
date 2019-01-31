@@ -31,8 +31,8 @@ Route::namespace('Manage')->middleware(['auth', 'dynamic.config'])->group(functi
     // Route::get('projects/{project}/user', '@user');
     //党组织
     Route::resource('projects', 'ProjectController');
-    Route::post('projects/add', 'ProjectController@addByName');
-    Route::post('projects/edit', 'ProjectController@editByName');
+    Route::post('project/add', 'ProjectController@addByName');
+    Route::post('project/edit', 'ProjectController@editByName');
 
     Route::resource('projects/{project}/user', 'ProjectUserController')
         ->names('projects.user')->only(['create', 'store', 'edit', 'update']);
@@ -46,6 +46,8 @@ Route::namespace('Manage')->middleware(['auth', 'dynamic.config'])->group(functi
 
     //宣传片
     Route::resource('xuanchuans', 'XuanchuanController');
+    Route::post('xuanchuan/edit', 'XuanchuanController@edit');
+    Route::post('xuanchuan/del', 'XuanchuanController@del');
     Route::get('xuanchuan/upload_token', 'XuanchuanController@uploadToken');
 
 });

@@ -35,4 +35,14 @@ class ProjectController extends Controller
                        ->where('name', 'like', '%'.$name.'%')
                        ->get();
     }
+
+    /**
+    * 根据id查询党员
+    */
+    public function dangyuanGet(Request $request, $project_id, $id)
+    {
+        return Dangyuan::where('project_id', $project_id)
+                       ->where('id', $id)
+                       ->first();
+    }
 }

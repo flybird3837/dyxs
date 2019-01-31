@@ -24,4 +24,5 @@ Route::namespace('Api')->group(function () {
     Route::get('org', "ProjectController@list");
     Route::get('org/{project_id}/dangyuan', "ProjectController@dangyuans");
     Route::get('org/{project_id}/dangyuan/{name}', "ProjectController@dangyuanSearch");
+    Route::get('org/{project_id}/{id}', "ProjectController@dangyuanGet");
 });

@@ -56,4 +56,42 @@ class XuanchuanController extends Controller
         $upload_domain = 'http://'.config('filesystems.disks.qiniu.domains.default');
         return ['token' => $upload_token, 'domain' => $upload_domain];
     }
+
+    /**
+     * 更新
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function edit(Request $request){
+        $project_id = $this->getUserProjectId();
+        $xuanchuan = Xuanchuan::find($request->id);
+        if(!$xuanchuan)
+            return 1;
+        if ($xuanchuan->project_id != $project_id)
+            return 2;
+        $xuanchuan->name = $request->name;
+        $xuanchuan->intro = $request->intro;
+        $xuanchuan->save();
+        return 0;
+    }
+
+    /**
+     * 删除
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function del(Request $request){
+        $project_id = $this->getUserProjectId();
+        $xuanchuan = Xuanchuan::find($request->id);
+        if(!$xuanchuan)
+            return 1;
+        if ($xuanchuan->project_id != $project_id)
+            return 2;
+        $disk = QiniuStorage::disk('qiniu');
+        $r = $disk->delete($xuanchuan->video); 
+        $xuanchuan->name = $request->name;
+        $xuanchuan->intro = $request->intro;
+        $xuanchuan->save();
+        return 0;
+    }
 }

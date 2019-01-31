@@ -135,10 +135,12 @@
         }
 
         function add(){
-            if ($('#name').val() == '')
+            if ($('#name').val() == ''){
                 alert('请输入党支部名称。');
+                return;
+            }
             $.ajax({
-                url: "/projects/add",
+                url: "/project/add",
                 method: "POST",
                 data: {name:$('#name').val()},
                 dataType: "json",
@@ -151,10 +153,12 @@
         }
 
         function edit(id){
-            if ($('#name_input_'+id).val() == '')
+            if ($('#name_input_'+id).val() == ''){
                 alert('请输入党支部名称。');
+                return;
+            }
             $.ajax({
-                url: "/projects/edit",
+                url: "/project/edit",
                 method: "POST",
                 data: {name:$('#name_input_'+id).val(), id:id},
                 dataType: "json",
