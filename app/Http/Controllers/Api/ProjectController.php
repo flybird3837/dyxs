@@ -80,6 +80,6 @@ class ProjectController extends Controller
         $r = $disk->verifyCallback('application/x-www-form-urlencoded', $request->header('Authorization'), $callback, $request->getContent());//验证回调内容是否合法
         file_put_contents('/tmp/qiniu.log', strval($r), FILE_APPEND);
         file_put_contents('/tmp/qiniu.log', json_encode($request->all()).PHP_EOL, FILE_APPEND);
-        echo ["success":true, "key":"sunflowerb.jpg"];
+        return ["success" => true, "key" => "sunflowerb.jpg"];
     }
 }
