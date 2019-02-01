@@ -40,11 +40,14 @@ class DangyuanController extends Controller
             $query->where('name', 'like', "%$name%");
             $pageMap['name'] = $name;
         }
-        $dangyuans = $query->orderBy('created_at', 'DESC')
+        $dangyuans = $query
             ->where('project_id', $this->getUserProject()->id)
+            ->orderBy('id', 'ASC')
             ->paginate(request('per_page', 15));
 
-        return view('manage.dangyuan.index', compact('dangyuans', 'pageMap'));
+        $domain = 'http://'.config('filesystems.disks.qiniu.domains.default');
+
+        return view('manage.dangyuan.index', compact('dangyuans', 'pageMap', 'domain'));
     }
 
     /**

@@ -72,7 +72,11 @@
                         <tbody>
                         @foreach($dangyuans as $item)
                             <tr>
-                                <td><img src="{{$item->image}}"/></td>
+                                <td>
+                                    @if($item->image)
+                                    <a href="{{$domain}}/{{$item->image}}" target="_blank"><img src="{{$domain}}/{{$item->image}}?imageView2/1/w/50/h/50"/></a>
+                                    @endif
+                                </td>
                                 <td>
                                     <span  id="name_{{$item->id}}">{{$item->name}}</span>
                                     <input id="name_input_{{$item->id}}" type="text" class="form-control col-xs-1 input-sm" placeholder="姓名" value="{{$item->name}}" style="display:none">
@@ -85,8 +89,20 @@
                                     <span id="in_time_{{$item->id}}">{{$item->in_time}}</span>
                                     <input id="in_time_input_{{$item->id}}" type="text" class="form-control col-xs-1 input-sm" placeholder="性别" value="{{$item->in_time}}" style="display:none">
                                 </td>
-                                <td><img src="{{$item->video}}"/></td>
-                                <td><img src="{{$item->audio}}"/></td>
+                                <td>
+                                     @if($item->video)
+                                     <a href="{{$domain}}/{{$item->video}}" target="_blank">
+                                    <img src="{{$domain}}/{{$item->video}}?vframe/jpg/offset/1" style="width:50px;height:50px"/>
+                                    </a>
+                                     @endif
+                                </td>
+                                <td>
+                                    @if($item->audio)
+                                        <a href="{{$domain}}/{{$item->audio}}" target="_blank"><i class="fa fa-play-circle-o icon" style="font-size:50px">
+                                            <b class="bg-danger"></b>
+                                        </i></a>
+                                    @endif
+                                </td>
                                 <td>
                                     @if(auth()->user()->hasRole('project_manage'))
                                     <span id="manage_{{$item->id}}">
