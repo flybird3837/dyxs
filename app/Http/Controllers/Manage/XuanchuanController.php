@@ -69,6 +69,8 @@ class XuanchuanController extends Controller
             return 1;
         if ($xuanchuan->project_id != $project_id)
             return 2;
+        if($request->category)
+            $xuanchuan->category = $request->category;
         $xuanchuan->name = $request->name;
         $xuanchuan->intro = $request->intro;
         $xuanchuan->save();

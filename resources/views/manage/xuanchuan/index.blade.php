@@ -40,6 +40,7 @@
                         <thead>
                         <tr>
                             <th>视频</th>
+                            <th>分类</th>
                             <th>主题</th>
                             <th>简介</th>
                             <th>操作</th>
@@ -53,11 +54,15 @@
                                     <img src="{{$upload_domain}}/{{$item->video}}?vframe/jpg/offset/1" style="width:50px;height:50px"/>
                                   </a>
                                 </td>
-                                <td width="35%">
+                                <td width="20%">
+                                  <span id="category_{{$item->id}}">{{$item->category}}</span>
+                                  <input id="category_input_{{$item->id}}" type="text" class="form-control col-xs-1 input-sm" placeholder="分类" value="{{$item->category}}" style="display:none">
+                                </td>
+                                <td width="25%">
                                   <span id="name_{{$item->id}}">{{$item->name}}</span>
                                   <input id="name_input_{{$item->id}}" type="text" class="form-control col-xs-1 input-sm" placeholder="主题" value="{{$item->name}}" style="display:none">
                                 </td>
-                                <td width="35%">
+                                <td width="25%">
                                   <span id="intro_{{$item->id}}">{{$item->intro}}</span>
                                   <input id="intro_input_{{$item->id}}" type="text" class="form-control col-xs-1 input-sm" placeholder="简介" value="{{$item->intro}}" style="display:none">
                                 </td>
@@ -374,6 +379,8 @@
   });
 
   function showEdit(id){
+      $('#category_'+id).toggle();
+      $('#category_input_'+id).toggle();
       $('#name_'+id).toggle();
       $('#name_input_'+id).toggle();
       $('#intro_'+id).toggle();
@@ -394,7 +401,7 @@
       $.ajax({
           url: "/xuanchuan/edit",
           method: "POST",
-          data: {name:$('#name_input_'+id).val(), intro:$('#intro_input_'+id).val(), id:id},
+          data: {category:$('#category_input_'+id).val(), name:$('#name_input_'+id).val(), intro:$('#intro_input_'+id).val(), id:id},
           dataType: "json",
           success: function success(data) {
               if (data.error != 0) {

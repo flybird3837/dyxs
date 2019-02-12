@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use Cache;
 use App\Models\Project;
 use App\Models\Dangyuan;
+use App\Models\Xuanchuan;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use zgldh\QiniuStorage\QiniuStorage;
@@ -25,6 +26,16 @@ class ProjectController extends Controller
     public function dangyuans(Request $request, $project_id)
     {
         return Dangyuan::where('project_id', $project_id)->paginate(request('per_page', 15));
+    }
+
+    /**
+    * 党组织宣传片
+    */
+    public function xuanchuans(Request $request, $project_id, $category)
+    {
+        return Xuanchuan::where('project_id', $project_id)
+                        ->where('category', $category)
+                        ->paginate(request('per_page', 15));
     }
 
     /**
