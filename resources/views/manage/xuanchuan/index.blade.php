@@ -50,13 +50,18 @@
                         @foreach($xuanchuans as $item)
                             <tr>
                                 <td width="15%">
-                                  <a href="{{$upload_domain}}/{{$item->video}}" target="_blank">
-                                    <img src="{{$upload_domain}}/{{$item->video}}?vframe/jpg/offset/1" style="width:50px;height:50px"/>
+                                  <a href="{{$item->video}}" target="_blank">
+                                    <img src="{{$item->video}}?vframe/jpg/offset/1" style="width:50px;height:50px"/>
                                   </a>
                                 </td>
                                 <td width="20%">
                                   <span id="category_{{$item->id}}">{{$item->category}}</span>
-                                  <input id="category_input_{{$item->id}}" type="text" class="form-control col-xs-1 input-sm" placeholder="分类" value="{{$item->category}}" style="display:none">
+                                  <select id="category_input_{{$item->id}}"  class="form-control col-xs-1 input-sm" style="display:none">
+                                    <option value="学习路上" {{$item->category=='学习路上' ? 'selected' : ''}}>学习路上</option>
+                                    <option value="百年党史" {{$item->category=='百年党史' ? 'selected' : ''}}>百年党史</option>
+                                    <option value="红色旅程" {{$item->category=='红色旅程' ? 'selected' : ''}}>红色旅程</option>
+                                    <option value="时代记忆" {{$item->category=='时代记忆' ? 'selected' : ''}}>时代记忆</option>
+                                  </select>
                                 </td>
                                 <td width="25%">
                                   <span id="name_{{$item->id}}">{{$item->name}}</span>
