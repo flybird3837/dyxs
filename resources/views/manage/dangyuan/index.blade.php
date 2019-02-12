@@ -74,7 +74,7 @@
                             <tr>
                                 <td>
                                     @if($item->image)
-                                    <a href="{{$domain}}/{{$item->image}}" target="_blank"><img src="{{$domain}}/{{$item->image}}?imageView2/1/w/50/h/50"/></a>
+                                    <a href="{{$item->image}}" target="_blank"><img src="{{$item->image}}?imageView2/1/w/50/h/50"/></a>
                                     @endif
                                 </td>
                                 <td>
@@ -91,14 +91,14 @@
                                 </td>
                                 <td>
                                      @if($item->video)
-                                     <a href="{{$domain}}/{{$item->video}}" target="_blank">
-                                    <img src="{{$domain}}/{{$item->video}}?vframe/jpg/offset/1" style="width:50px;height:50px"/>
+                                     <a href="{{$item->video}}" target="_blank">
+                                    <img src="{{$item->video}}?vframe/jpg/offset/1" style="width:50px;height:50px"/>
                                     </a>
                                      @endif
                                 </td>
                                 <td>
                                     @if($item->audio)
-                                        <a href="{{$domain}}/{{$item->audio}}" target="_blank"><i class="fa fa-play-circle-o icon" style="font-size:50px">
+                                        <a href="{{$item->audio}}" target="_blank"><i class="fa fa-play-circle-o icon" style="font-size:50px">
                                             <b class="bg-danger"></b>
                                         </i></a>
                                     @endif

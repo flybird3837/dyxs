@@ -55,7 +55,6 @@ class ProjectController extends Controller
         return Dangyuan::where('project_id', $project_id)
                        ->whereNotNull('image')
                        ->whereNotNull('video')
-                       ->whereNotNull('audio')
                        ->paginate(request('per_page', 15));
     }
 
