@@ -13,7 +13,7 @@
                             @if(auth()->user()->hasRole('administrator'))
                             <img src="{{ asset('images/logo.png') }}" class="m-r-sm"> <span class="hidden-nav-xs">后台管理系统</span>
                             @else
-                            <img src="@if(auth()->user()->project->image){{ asset('storage/avatar') }}/{{auth()->user()->project->image}}@else{{ asset('images/logo.png') }}@endif" class="m-r-sm"> 
+                            <img src="@if(auth()->user()->project->image){{auth()->user()->project->image}}@else{{ asset('images/logo.png') }}@endif" class="m-r-sm"> 
                             <span class="hidden-nav-xs" style="font-size:15px;font-weight:bold">{{ auth()->user()->project->name }}</span>
                             @endif
                         </a>

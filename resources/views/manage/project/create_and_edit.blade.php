@@ -38,7 +38,7 @@
                         <div class="form-group {{$errors->has('description') ? 'has-error' : ''}}">
                             <label for="description" class="col-sm-3 control-label">LOGO</label>
                             <div class="col-sm-9">
-                                <img src="{{ asset('storage/avatar') }}/{{$project->image}}" style="width:100px;height:auto"/>
+                                <img src="{{$project->image}}" style="width:100px;height:auto"/>
                                 <input id="image" name="image"
                                           class="form-control" type="file"/>
                                 @if($errors->has('description'))

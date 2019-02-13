@@ -16,4 +16,10 @@ class Project extends Model
 
     protected $hidden = [
     ];
+
+    public function getImageAttribute($value)
+    {
+        if ($value != null)
+            return config('filesystems.disks.public.url').'/avatar/'.$value;
+    }
 }

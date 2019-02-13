@@ -17,6 +17,7 @@ class CreateXuanchuansTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('project_id');
             $table->string('name', 50)->nullable();
+            $table->string('category', 20)->nullable();
             $table->string('intro')->nullable();
             $table->string('video');
             $table->timestamps();
