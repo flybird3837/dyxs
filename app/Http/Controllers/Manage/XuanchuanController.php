@@ -91,8 +91,6 @@ class XuanchuanController extends Controller
             return 2;
         $disk = QiniuStorage::disk('qiniu');
         $disk->delete($xuanchuan->video); 
-        $xuanchuan->name = $request->name;
-        $xuanchuan->intro = $request->intro;
         $xuanchuan->delete();
         return 0;
     }

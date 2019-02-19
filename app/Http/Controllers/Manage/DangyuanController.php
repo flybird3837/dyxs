@@ -70,6 +70,22 @@ class DangyuanController extends Controller
     }
 
     /**
+     * 删除
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function del(Request $request){
+        $project_id = $this->getUserProjectId();
+        $dangyuan = Dangyuan::find($request->id);
+        if(!$dangyuan)
+            return 1;
+        if ($dangyuan->project_id != $project_id)
+            return 2;
+        $dangyuan->delete();
+        return 0;
+    }
+
+    /**
      * 导入
      * @param Request $request
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View

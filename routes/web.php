@@ -43,6 +43,7 @@ Route::namespace('Manage')->middleware(['auth', 'dynamic.config'])->group(functi
     Route::post('/dangyuan/edit', 'DangyuanController@edit');
     Route::post('dangyuan/upload', 'DangyuanController@upload')->name('dangyuan.upload');
     Route::get('dangyuan/download', 'DangyuanController@download')->name('dangyuan.download');
+    Route::post('dangyuan/del', 'DangyuanController@del');
 
     //宣传片
     Route::resource('xuanchuans', 'XuanchuanController');

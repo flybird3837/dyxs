@@ -106,7 +106,8 @@
                                 <td>
                                     @if(auth()->user()->hasRole('project_manage'))
                                     <span id="manage_{{$item->id}}">
-                                        <a href="javascript:void(0)" onclick="showEdit({{$item->id}})">修改</a>
+                                        <a href="javascript:void(0)" onclick="showEdit({{$item->id}})">修改</a>&nbsp;|&nbsp;
+                                        <a href="javascript:void(0)" onclick="del({{$item->id}})">删除</a>
                                     </span>
                                     <span id="edit_btn_{{$item->id}}" style="display:none">
                                         <button type="button" class="btn btn-success btn-sm" onclick="edit({{$item->id}})">提交</button>
@@ -233,6 +234,25 @@
                     alert('入党时间错误，请重新输入');
                 }else if (data == 2){
                     alert('性别格式错误，请输入男或女');
+                }
+            }
+        });
+    }
+
+    function del(id){
+        if(confirm('确定要删除吗？')==false)
+            return;
+
+        $.ajax({
+            url: "/dangyuan/del",
+            method: "POST",
+            data: {
+                id:id
+            },
+            dataType: "json",
+            success: function success(data) {
+                if (data == 0) {
+                    window.location.reload();
                 }
             }
         });
