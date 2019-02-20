@@ -44,7 +44,7 @@
     <footer id="footer">
         <div class="text-center padder">
             <p>
-                <small>杭州久未网络科技有限责任公司<br>
+                <small>力合聚星（苏州）文化发展有限公司<br>
                     &copy; 2018 - 2020
                 </small>
             </p>
