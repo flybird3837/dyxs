@@ -1,8 +1,8 @@
 @extends('layouts.main')
 
-@section('title', '宣传片管理')
+@section('title', '学习视频管理')
 
-@section('content-header', '宣传片管理')
+@section('content-header', '学习视频管理')
 
 @section('content')
     <div class="row">
@@ -11,14 +11,14 @@
             <!-- .breadcrumb -->
             <ul class="breadcrumb">
                 <li><a href="{{route('dashboard.index')}}"><i class="fa fa-home"></i> 控制台</a></li>
-                <li class="active"><i class="fa fa-cogs icon"></i> 宣传片管理</li>
+                <li class="active"><i class="fa fa-cogs icon"></i> 学习视频管理</li>
             </ul>
             <!-- / .breadcrumb -->
         </div>
         <div class="col-lg-12">
             @include('shared.alert')
             <section class="panel panel-default">
-                <header class="panel-heading"> 宣传片列表</header>
+                <header class="panel-heading"> 学习视频列表</header>
                 <div class="row text-sm wrapper">
                     <div class="col-sm-12">
                         <span class="pull-right">

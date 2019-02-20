@@ -90,7 +90,7 @@
                                             <i class="fa fa-map-marker icon">
                                                 <b class="bg-success"></b>
                                             </i>
-                                            <span>宣传片</span>
+                                            <span>学习视频</span>
                                         </a>
                                     </li>
                                 @endif
