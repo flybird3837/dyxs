@@ -38,7 +38,7 @@ class ProjectController extends Controller
     {
         return Xuanchuan::where('project_id', $project_id)
                         ->where('category', $category)
-                        ->paginate(request('per_page', 15));
+                        ->paginate(request('per_page', 3));
     }
 
     /**
