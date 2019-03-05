@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateXuanchuansTable extends Migration
+class CreateTeamTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,11 @@ class CreateXuanchuansTable extends Migration
      */
     public function up()
     {
-        Schema::create('xuanchuans', function (Blueprint $table) {
+        Schema::create('teams', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('project_id')->comment('党组织ID');
+            $table->unsignedInteger('project_id')->comment('党组织id');
             $table->string('name', 50)->nullable()->comment('党支部名称');
-            $table->string('category', 20)->nullable()->comment('类别');
-            $table->string('intro')->nullable()->comment('简介');
-            $table->string('video')->comment('视频');
+            $table->string('image')->nullable()->comment('集体照');
             $table->timestamps();
         });
     }
@@ -31,6 +29,6 @@ class CreateXuanchuansTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('xuanchuans');
+        Schema::dropIfExists('teams');
     }
 }

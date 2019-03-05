@@ -25,8 +25,11 @@ Route::namespace('Api')->group(function () {
     Route::get('org/{project_id}/dangyuan', "ProjectController@dangyuans");
     Route::get('org/{project_id}/xuanchuan/{category}', "ProjectController@xuanchuans");
     Route::get('org/{project_id}/dangyuan/{name}', "ProjectController@dangyuanSearch");
-    Route::get('org/{project_id}/{id}', "ProjectController@dangyuanGet");
     Route::get('org/{project_id}/xuanshi/list', "ProjectController@dangyuanXuanshi");
+    Route::get('org/{project_id}/team', "ProjectController@teams");
+    Route::get('org/{project_id}/team/{id}', "ProjectController@teamGet");
+    Route::get('org/{project_id}/{id}', "ProjectController@dangyuanGet");
+
     Route::get('qiniu/token', "ProjectController@qiniuToken");
     Route::post('qiniu/callback', "ProjectController@qiniuCallback");
 });

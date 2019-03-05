@@ -85,6 +85,16 @@
                                     </li>
                                 @endif
                                 @if(auth()->user()->hasRole('project_manage') || auth()->user()->hasRole('project_maintenance'))
+                                    <li class="{{Route::currentRouteName() === 'teams.index' ? 'active' : ''}}">
+                                        <a href="{{route('teams.index')}}">
+                                            <i class="fa fa-map-marker icon">
+                                                <b class="bg-success"></b>
+                                            </i>
+                                            <span>集体照管理</span>
+                                        </a>
+                                    </li>
+                                @endif
+                                @if(auth()->user()->hasRole('project_manage') || auth()->user()->hasRole('project_maintenance'))
                                     <li class="{{Route::currentRouteName() === 'xuanchuans.index' ? 'active' : ''}}">
                                         <a href="{{route('xuanchuans.index')}}">
                                             <i class="fa fa-map-marker icon">

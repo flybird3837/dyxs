@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use Cache;
 use App\Models\Project;
 use App\Models\Dangyuan;
+use App\Models\Team;
 use App\Models\Xuanchuan;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -73,6 +74,26 @@ class ProjectController extends Controller
     }
 
     /**
+    * 集体照列表
+    */
+    public function teams(Request $request, $project_id)
+    {
+        return Team::where('project_id', $project_id)
+                       ->whereRaw('image is null')
+                       ->paginate(request('per_page', 15));
+    }
+
+    /**
+    * 集体照获取
+    */
+    public function teamGet(Request $request, $project_id, $id)
+    {
+        return Team::where('project_id', $project_id)
+                       ->where('id', $id)
+                       ->first();
+    }
+
+    /**
     * 七牛token
     */
     public function qiniuToken(Request $request)
@@ -104,20 +125,30 @@ class ProjectController extends Controller
         $project_id = intval($params[1]);
         $id = intval($params[3]);
         $file = $params[4];
-        $dangyuan = Dangyuan::where('project_id', $project_id)
-                            ->where('id', $id)
-                            ->first();
-        if($dangyuan){
-            $pos = strpos($file, 'avatar');
-            if ($pos !== false) 
-                $dangyuan->image = $request->key;
-            $pos = strpos($file, 'video');
-            if ($pos !== false) 
-                $dangyuan->video = $request->key;
-            $pos = strpos($file, 'audio');
-            if ($pos !== false) 
-                $dangyuan->audio = $request->key;
-            $dangyuan->save();
+        if (strpos($file, 'dangyuan') !== false){
+            $dangyuan = Dangyuan::where('project_id', $project_id)
+                                ->where('id', $id)
+                                ->first();
+            if($dangyuan){
+                $pos = strpos($file, 'avatar');
+                if ($pos !== false) 
+                    $dangyuan->image = $request->key;
+                $pos = strpos($file, 'video');
+                if ($pos !== false) 
+                    $dangyuan->video = $request->key;
+                $pos = strpos($file, 'audio');
+                if ($pos !== false) 
+                    $dangyuan->audio = $request->key;
+                $dangyuan->save();
+            }
+        } else if (strpos($file, 'team') !== false){
+            $team = Team::where('project_id', $project_id)
+                                ->where('id', $id)
+                                ->first();
+            if($team){
+                $team->image = $request->key;
+                $team->save();
+            }
         }
         file_put_contents('/tmp/qiniu.log', $request->getContent().PHP_EOL, FILE_APPEND);
         file_put_contents('/tmp/qiniu.log', $request->header('Authorization').PHP_EOL, FILE_APPEND);
