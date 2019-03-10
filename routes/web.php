@@ -49,6 +49,7 @@ Route::namespace('Manage')->middleware(['auth', 'dynamic.config'])->group(functi
     Route::resource('teams', 'TeamController');
     Route::post('team/add', 'TeamController@addByName');
     Route::post('team/edit', 'TeamController@editByName');
+    Route::post('team/del', 'TeamController@del');
 
     //宣传片
     Route::resource('xuanchuans', 'XuanchuanController');

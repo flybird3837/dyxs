@@ -125,7 +125,7 @@ class ProjectController extends Controller
         $project_id = intval($params[1]);
         $id = intval($params[3]);
         $file = $params[4];
-        if (strpos($file, 'dangyuan') !== false){
+        if (strpos($request->key, 'dangyuan') !== false){
             $dangyuan = Dangyuan::where('project_id', $project_id)
                                 ->where('id', $id)
                                 ->first();
@@ -141,7 +141,7 @@ class ProjectController extends Controller
                     $dangyuan->audio = $request->key;
                 $dangyuan->save();
             }
-        } else if (strpos($file, 'team') !== false){
+        } else if (strpos($request->key, 'team') !== false){
             $team = Team::where('project_id', $project_id)
                                 ->where('id', $id)
                                 ->first();
