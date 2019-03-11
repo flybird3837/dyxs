@@ -40,6 +40,7 @@ class Kernel extends HttpKernel
         'api' => [
             'throttle:60,1',
             'bindings',
+            \Barryvdh\Cors\HandleCors::class,
         ],
     ];
 
@@ -61,6 +62,5 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'menu.highlight' => \App\Http\Middleware\HighlightMenu::class,
         'dynamic.config' => \App\Http\Middleware\DynamicConfig::class,
-        'cross.http' => \App\Http\Middleware\CrossHttp::class,
     ];
 }
