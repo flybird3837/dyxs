@@ -18,6 +18,7 @@ class CreateTeamTable extends Migration
             $table->unsignedInteger('project_id')->comment('党组织id');
             $table->string('name', 50)->nullable()->comment('党支部名称');
             $table->string('image')->nullable()->comment('集体照');
+            $table->string('video')->nullable()->comment('集体视频');
             $table->timestamps();
         });
     }

@@ -146,7 +146,12 @@ class ProjectController extends Controller
                                 ->where('id', $id)
                                 ->first();
             if($team){
-                $team->image = $request->key;
+                $pos = strpos($file, 'image');
+                if ($pos !== false) 
+                    $team->image = $request->key;
+                $pos = strpos($file, 'video');
+                if ($pos !== false) 
+                    $team->video = $request->key;
                 $team->save();
             }
         }

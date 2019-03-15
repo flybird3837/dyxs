@@ -42,6 +42,7 @@
                         <thead>
                         <tr>
                             <th>集体照</th>
+                            <th>集体视频</th>
                             <th>党支部名称</th>
                             <th>操作</th>
                         </tr>
@@ -50,8 +51,15 @@
                         @foreach($list as $item)
                             <tr>
                                 <td width="20%" style="padding-top:10px">
-                                    @if($item->image)
+                                    @if(isset($item->image))
                                     <a href="{{$item->image}}" target="_blank"><img src="{{$item->image}}?imageView2/1/w/50/h/50"/></a>
+                                    @endif
+                                </td>
+                                <td width="15%">
+                                    @if(isset($item->video))
+                                    <a href="{{$item->video}}" target="_blank">
+                                        <img src="{{$item->video}}?vframe/jpg/offset/1" style="width:50px;height:50px"/>
+                                    </a>
                                     @endif
                                 </td>
                                 <td width="60%" style="padding-top:10px">
