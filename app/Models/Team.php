@@ -22,4 +22,10 @@ class Team extends Model
         if ($value != null)
             return 'http://'.config('filesystems.disks.qiniu.domains.default').'/'.$value;
     }
+
+    public function getVideoAttribute($value)
+    {
+        if ($value != null)
+            return 'http://'.config('filesystems.disks.qiniu.domains.default').'/'.$value;
+    }
 }
