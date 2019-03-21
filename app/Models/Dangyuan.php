@@ -29,6 +29,6 @@ class Dangyuan extends Model
     public function getHlsVideoAttribute()
     {
         if ($this->video != null)
-            return 'http://'.config('filesystems.disks.qiniu.domains.default').'/hls_'.$value;
+            return 'http://'.config('filesystems.disks.qiniu.domains.default').'/hls_'.$this->video;
     }
 }
