@@ -78,9 +78,9 @@ class ProjectController extends Controller
                 $dangyuan->hls_id = $disk->persistentFop($file, $fops, 'dyxs1', true); 
             }*/
 
-            if($dangyuan->hls_id && $dangyuan->hls_status==0){
+            if($dangyuan['hls_id'] && $dangyuan['hls_status']==0){
                 $disk = QiniuStorage::disk('qiniu');
-                $result = $disk->persistentStatus($dangyuan->hls_id); 
+                $result = $disk->persistentStatus($dangyuan['hls_id']); 
                 if($result[0]['code'] == 0){
                     $hls_dangyuan = Dangyuan::find($dangyuan['id']);
                     $hls_dangyuan->hls_status = 1;
