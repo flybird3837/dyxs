@@ -67,10 +67,29 @@ class ProjectController extends Controller
     */
     public function dangyuanXuanshi(Request $request, $project_id)
     {
-        return Dangyuan::where('project_id', $project_id)
+        $dangyuans = Dangyuan::where('project_id', $project_id)
                        ->whereNotNull('image')
                        ->whereNotNull('video')
-                       ->paginate(request('per_page', 15));
+                       ->paginate(request('per_page', 15))->toArray();
+        foreach ($dangyuans['data'] as &$dangyuan) {
+            /*if(!$dangyuan->hls_id){
+                $hls_file = config('filesystems.disks.qiniu.bucket').':hls_'.$request->key;
+                $fops = 'avthumb/m3u8/segtime/10/ab/128k/ar/44100/acodec/libfaac/r/30/vb/640k/vcodec/libx264/stripmeta/0/noDomain/1|saveas/'.base64_encode($hls_file);
+                $dangyuan->hls_id = $disk->persistentFop($file, $fops, 'dyxs1', true); 
+            }*/
+
+            if($dangyuan->hls_id && $dangyuan->hls_status==0){
+                $disk = QiniuStorage::disk('qiniu');
+                $result = $disk->persistentStatus($dangyuan->hls_id); 
+                if($result[0]['code'] == 0){
+                    $hls_dangyuan = Dangyuan::find($dangyuan['id']);
+                    $hls_dangyuan->hls_status = 1;
+                    $hls_dangyuan->save();
+                }
+            }
+        }
+        return $dangyuans;
+
     }
 
     /**
@@ -134,8 +153,12 @@ class ProjectController extends Controller
                 if ($pos !== false) 
                     $dangyuan->image = $request->key;
                 $pos = strpos($file, 'video');
-                if ($pos !== false) 
+                if ($pos !== false) {
                     $dangyuan->video = $request->key;
+                    $hls_file = config('filesystems.disks.qiniu.bucket').':hls_'.$request->key;
+                    $fops = 'avthumb/m3u8/segtime/10/ab/128k/ar/44100/acodec/libfaac/r/30/vb/640k/vcodec/libx264/stripmeta/0/noDomain/1|saveas/'.base64_encode($hls_file);
+                    $dangyuan->hls_id = $disk->persistentFop($file, $fops, 'dyxs1', true); 
+                }
                 $pos = strpos($file, 'audio');
                 if ($pos !== false) 
                     $dangyuan->audio = $request->key;

@@ -22,6 +22,8 @@ class CreateDangyuansTable extends Migration
             $table->string('image')->nullable()->comment('照片');
             $table->string('video')->nullable()->comment('视频');
             $table->string('audio')->nullable()->comment('语音');
+            $table->string('hls_id')->nullable()->comment('hls处理id');
+            $table->boolean('hls_status')->default(0)->comment('hls状态');
             $table->timestamps();
         });
     }

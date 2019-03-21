@@ -29,7 +29,6 @@ trait QiniuHelper
         $disk = $this->getDisk();
         if (!$dangyuan->image){
           $file = 'org/'.$dangyuan->project_id.'/dangyuan/'.$dangyuan->id.'/avatar.png';
-          echo $file.'==';
           if ($disk->exists($file))
                 $dangyuan->image = $file;
         }
