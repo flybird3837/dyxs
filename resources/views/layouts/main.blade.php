@@ -90,7 +90,7 @@
                                             <i class="fa fa-map-marker icon">
                                                 <b class="bg-success"></b>
                                             </i>
-                                            <span>集体照管理</span>
+                                            <span>党组织信息管理</span>
                                         </a>
                                     </li>
                                 @endif
@@ -100,7 +100,7 @@
                                             <i class="fa fa-map-marker icon">
                                                 <b class="bg-success"></b>
                                             </i>
-                                            <span>学习视频</span>
+                                            <span>学习视频管理</span>
                                         </a>
                                     </li>
                                 @endif

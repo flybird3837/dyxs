@@ -1,8 +1,8 @@
 @extends('layouts.main')
 
-@section('title', '集体照管理')
+@section('title', '党组织信息管理')
 
-@section('content-header', '集体照管理')
+@section('content-header', '党组织信息管理')
 
 @section('content')
     <div class="row">
@@ -10,7 +10,7 @@
             <!-- .breadcrumb -->
             <ul class="breadcrumb">
                 <li><a href="{{route('dashboard.index')}}"><i class="fa fa-home"></i> 控制台</a></li>
-                <li><i class="fa fa-list-ul active"></i> 集体照管理</li>
+                <li><i class="fa fa-list-ul active"></i> 党组织信息管理</li>
             </ul>
             <!-- / .breadcrumb -->
         </div>
