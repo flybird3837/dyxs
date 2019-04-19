@@ -10,6 +10,7 @@ use App\Models\Xuanchuan;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use zgldh\QiniuStorage\QiniuStorage;
+use Illuminate\Support\Facades\DB;
 
 class ProjectController extends Controller
 {
@@ -67,28 +68,40 @@ class ProjectController extends Controller
     */
     public function dangyuanXuanshi(Request $request, $project_id)
     {
-        $dangyuans = Dangyuan::where('project_id', $project_id)
+
+        $dangyuans = Dangyuan::selectRaw("id, project_id, name, sex, in_time, image, video, audio, hls_id, hls_status, created_at, updated_at, 'dangyuan' as type ")
+                       ->where('project_id', $project_id)
                        ->whereNotNull('image')
-                       ->whereNotNull('video')
-                       ->paginate(request('per_page', 15))->toArray();
-        foreach ($dangyuans['data'] as &$dangyuan) {
+                       ->whereNotNull('video');
+        $teams = Team::selectRaw("id, project_id, name, null as sex, null as in_time, image, video, null as audio, null as hls_id, null as hls_status, created_at, updated_at, 'team' as type ")
+                       ->where('project_id', $project_id)
+                       ->whereNotNull('image')
+                       ->whereNotNull('video');
+
+        $query = DB::raw("(({$teams->toSql()}) union all ({$dangyuans->toSql()})) as aa");
+        $query = DB::table($query)
+                 ->mergeBindings($teams->getQuery())
+                 ->mergeBindings($dangyuans->getQuery());
+        $results = $query->paginate(request('per_page', 15))->toArray();
+        foreach ($results['data'] as &$dangyuan) {
             /*if(!$dangyuan->hls_id){
                 $hls_file = config('filesystems.disks.qiniu.bucket').':hls_'.$request->key;
                 $fops = 'avthumb/m3u8/segtime/10/ab/128k/ar/44100/acodec/libfaac/r/30/vb/640k/vcodec/libx264/stripmeta/0/noDomain/1|saveas/'.base64_encode($hls_file);
                 $dangyuan->hls_id = $disk->persistentFop($file, $fops, 'dyxs1', true); 
             }*/
-
-            if($dangyuan['hls_id'] && $dangyuan['hls_status']==0){
-                $disk = QiniuStorage::disk('qiniu');
-                $result = $disk->persistentStatus($dangyuan['hls_id']); 
-                if($result[0]['code'] == 0){
-                    $hls_dangyuan = Dangyuan::find($dangyuan['id']);
-                    $hls_dangyuan->hls_status = 1;
-                    $hls_dangyuan->save();
+            if($dangyuan->type == 'dangyuan'){
+                if($dangyuan->hls_id && $dangyuan->hls_status==0){
+                    $disk = QiniuStorage::disk('qiniu');
+                    $result = $disk->persistentStatus($dangyuan->hls_id); 
+                    if($result[0]['code'] == 0){
+                        $hls_dangyuan = Dangyuan::find($dangyuan->id);
+                        $hls_dangyuan->hls_status = 1;
+                        $hls_dangyuan->save();
+                    }
                 }
             }
         }
-        return $dangyuans;
+        return $results;
 
     }
 
