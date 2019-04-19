@@ -89,6 +89,10 @@ class ProjectController extends Controller
                 $fops = 'avthumb/m3u8/segtime/10/ab/128k/ar/44100/acodec/libfaac/r/30/vb/640k/vcodec/libx264/stripmeta/0/noDomain/1|saveas/'.base64_encode($hls_file);
                 $dangyuan->hls_id = $disk->persistentFop($file, $fops, 'dyxs1', true); 
             }*/
+            $dangyuan->image = 'http://'.config('filesystems.disks.qiniu.domains.default').'/'.$dangyuan->image;
+            $dangyuan->video = 'http://'.config('filesystems.disks.qiniu.domains.default').'/'.$dangyuan->video;
+            $dangyuan->audio = 'http://'.config('filesystems.disks.qiniu.domains.default').'/'.$dangyuan->audio;
+
             if($dangyuan->type == 'dangyuan'){
                 if($dangyuan->hls_id && $dangyuan->hls_status==0){
                     $disk = QiniuStorage::disk('qiniu');
