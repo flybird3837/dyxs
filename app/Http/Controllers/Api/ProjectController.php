@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use zgldh\QiniuStorage\QiniuStorage;
 use Illuminate\Support\Facades\DB;
+use Qiniu\Processing\PersistentFop;
 
 class ProjectController extends Controller
 {
@@ -73,7 +74,7 @@ class ProjectController extends Controller
                        ->where('project_id', $project_id)
                        ->whereNotNull('image')
                        ->whereNotNull('video');
-        $teams = Team::selectRaw("id, project_id, name, null as sex, null as in_time, image, video, null as audio, null as hls_id, null as hls_status, created_at, updated_at, 'team' as type ")
+        $teams = Team::selectRaw("id, project_id, name, null as sex, null as in_time, image, video, null as audio, hls_id, hls_status, created_at, updated_at, 'team' as type ")
                        ->where('project_id', $project_id)
                        ->whereNotNull('image')
                        ->whereNotNull('video');
@@ -83,25 +84,39 @@ class ProjectController extends Controller
                  ->mergeBindings($teams->getQuery())
                  ->mergeBindings($dangyuans->getQuery());
         $results = $query->paginate(request('per_page', 15))->toArray();
-        foreach ($results['data'] as &$dangyuan) {
-            /*if(!$dangyuan->hls_id){
-                $hls_file = config('filesystems.disks.qiniu.bucket').':hls_'.$request->key;
-                $fops = 'avthumb/m3u8/segtime/10/ab/128k/ar/44100/acodec/libfaac/r/30/vb/640k/vcodec/libx264/stripmeta/0/noDomain/1|saveas/'.base64_encode($hls_file);
-                $dangyuan->hls_id = $disk->persistentFop($file, $fops, 'dyxs1', true); 
-            }*/
-            $dangyuan->image = 'http://'.config('filesystems.disks.qiniu.domains.default').'/'.$dangyuan->image;
-            $dangyuan->video = 'http://'.config('filesystems.disks.qiniu.domains.default').'/'.$dangyuan->video;
-            $dangyuan->audio = 'http://'.config('filesystems.disks.qiniu.domains.default').'/'.$dangyuan->audio;
+        $disk = QiniuStorage::disk('qiniu');
+        foreach ($results['data'] as $dangyuan) {
 
-            if($dangyuan->type == 'dangyuan'){
-                if($dangyuan->hls_id && $dangyuan->hls_status==0){
-                    $disk = QiniuStorage::disk('qiniu');
-                    $result = $disk->persistentStatus($dangyuan->hls_id); 
-                    if($result[0]['code'] == 0){
-                        $hls_dangyuan = Dangyuan::find($dangyuan->id);
-                        $hls_dangyuan->hls_status = 1;
-                        $hls_dangyuan->save();
-                    }
+            if(!$dangyuan->hls_id && $dangyuan->video){
+                $urls =  explode('/', $dangyuan->video);
+                $urls[count($urls) - 1] = 'hls_'.$urls[count($urls) - 1];
+                $hls_video = implode('/', $urls);
+                $hls_video = config('filesystems.disks.qiniu.bucket').':'.$hls_video;
+                $fops = 'avthumb/m3u8/segtime/10/ab/128k/ar/44100/acodec/libfaac/r/30/vb/640k/vcodec/libx264/stripmeta/0/noDomain/1|saveas/'.base64_encode($hls_video);
+                $dangyuan->hls_id = $disk->persistentFop($dangyuan->video, $fops, 'dyxs_hls', true);
+                $hls_dangyuan = Dangyuan::find($dangyuan->id);
+                $hls_dangyuan->hls_id = $dangyuan->hls_id;
+                $hls_dangyuan->save();
+            }
+            if($dangyuan->video){
+                $urls =  explode('/', $dangyuan->video);
+                $urls[count($urls) - 1] = 'hls_'.$urls[count($urls) - 1];
+                $dangyuan->hls_video = 'http://'.config('filesystems.disks.qiniu.domains.default').'/'.implode('/', $urls);
+
+                $dangyuan->video = 'http://'.config('filesystems.disks.qiniu.domains.default').'/'.$dangyuan->video;
+            }else
+                $dangyuan->hls_video = null;
+            if($dangyuan->image)
+                $dangyuan->image = 'http://'.config('filesystems.disks.qiniu.domains.default').'/'.$dangyuan->image;
+            if($dangyuan->video)
+                $dangyuan->audio = 'http://'.config('filesystems.disks.qiniu.domains.default').'/'.$dangyuan->audio;
+
+            if($dangyuan->hls_id && $dangyuan->hls_status==0){
+                $result = $disk->persistentStatus($dangyuan->hls_id); 
+                if(isset($result[0]['code']) && $result[0]['code'] == 0){
+                    $hls_dangyuan = Dangyuan::find($dangyuan->id);
+                    $hls_dangyuan->hls_status = 1;
+                    $hls_dangyuan->save();
                 }
             }
         }
@@ -174,7 +189,7 @@ class ProjectController extends Controller
                     $dangyuan->video = $request->key;
                     $hls_file = config('filesystems.disks.qiniu.bucket').':hls_'.$request->key;
                     $fops = 'avthumb/m3u8/segtime/10/ab/128k/ar/44100/acodec/libfaac/r/30/vb/640k/vcodec/libx264/stripmeta/0/noDomain/1|saveas/'.base64_encode($hls_file);
-                    $dangyuan->hls_id = $disk->persistentFop($file, $fops, 'dyxs1', true); 
+                    $dangyuan->hls_id = $disk->persistentFop($request->key, $fops, 'dyxs_hls', true); 
                 }
                 $pos = strpos($file, 'audio');
                 if ($pos !== false) 
@@ -190,8 +205,12 @@ class ProjectController extends Controller
                 if ($pos !== false) 
                     $team->image = $request->key;
                 $pos = strpos($file, 'video');
-                if ($pos !== false) 
+                if ($pos !== false) {
                     $team->video = $request->key;
+                    $hls_file = config('filesystems.disks.qiniu.bucket').':hls_'.$request->key;
+                    $fops = 'avthumb/m3u8/segtime/10/ab/128k/ar/44100/acodec/libfaac/r/30/vb/640k/vcodec/libx264/stripmeta/0/noDomain/1|saveas/'.base64_encode($hls_file);
+                    $team->hls_id = $disk->persistentFop($request->key, $fops, 'dyxs_hls', true); 
+                }
                 $team->save();
             }
         }
