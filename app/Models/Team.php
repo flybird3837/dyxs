@@ -10,6 +10,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Team extends Model
 {
+    protected $appends = ['hls_video'];
+
     protected $fillable = [
         'name'
     ];
@@ -27,5 +29,14 @@ class Team extends Model
     {
         if ($value != null)
             return 'http://'.config('filesystems.disks.qiniu.domains.default').'/'.$value;
+    }
+
+    public function getHlsVideoAttribute()
+    {
+        if ($this->video != null){
+            $urls =  explode('/', $this->video);
+            $urls[count($urls) - 1] = '/hls_'.$urls[count($urls) - 1];
+            return implode('/', $urls);
+        }
     }
 }

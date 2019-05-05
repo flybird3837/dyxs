@@ -59,9 +59,20 @@ class ProjectController extends Controller
     */
     public function dangyuanGet(Request $request, $project_id, $id)
     {
-        return Dangyuan::where('project_id', $project_id)
+        if($request->type=='dangyuan'){
+            return Dangyuan::where('project_id', $project_id)
+                           ->where('id', $id)
+                           ->first();
+        } else if($request->type == 'team'){
+            return Team::where('project_id', $project_id)
                        ->where('id', $id)
                        ->first();
+        }else{
+            return Dangyuan::where('project_id', $project_id)
+                           ->where('id', $id)
+                           ->first();
+        }
+
     }
 
     /**
