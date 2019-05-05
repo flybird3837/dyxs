@@ -94,7 +94,10 @@ class ProjectController extends Controller
                 $hls_video = config('filesystems.disks.qiniu.bucket').':'.$hls_video;
                 $fops = 'avthumb/m3u8/segtime/10/ab/128k/ar/44100/acodec/libfaac/r/30/vb/640k/vcodec/libx264/stripmeta/0/noDomain/1|saveas/'.base64_encode($hls_video);
                 $dangyuan->hls_id = $disk->persistentFop($dangyuan->video, $fops, 'dyxs_hls', true);
-                $hls_dangyuan = Dangyuan::find($dangyuan->id);
+                if($dangyuan->type=='team')
+                    $hls_dangyuan = Team::find($dangyuan->id);
+                else
+                    $hls_dangyuan = Dangyuan::find($dangyuan->id);
                 $hls_dangyuan->hls_id = $dangyuan->hls_id;
                 $hls_dangyuan->save();
             }
@@ -114,7 +117,10 @@ class ProjectController extends Controller
             if($dangyuan->hls_id && $dangyuan->hls_status==0){
                 $result = $disk->persistentStatus($dangyuan->hls_id); 
                 if(isset($result[0]['code']) && $result[0]['code'] == 0){
-                    $hls_dangyuan = Dangyuan::find($dangyuan->id);
+                    if($dangyuan->type=='team')
+                        $hls_dangyuan = Team::find($dangyuan->id);
+                    else
+                        $hls_dangyuan = Dangyuan::find($dangyuan->id);
                     $hls_dangyuan->hls_status = 1;
                     $hls_dangyuan->save();
                 }
