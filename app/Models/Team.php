@@ -35,7 +35,7 @@ class Team extends Model
     {
         if ($this->video != null){
             $urls =  explode('/', $this->video);
-            $urls[count($urls) - 1] = '/hls_'.$urls[count($urls) - 1];
+            $urls[count($urls) - 1] = 'hls_'.$urls[count($urls) - 1];
             return implode('/', $urls);
         }
     }
