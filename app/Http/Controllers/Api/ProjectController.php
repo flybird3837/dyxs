@@ -204,7 +204,11 @@ class ProjectController extends Controller
                 $pos = strpos($file, 'video');
                 if ($pos !== false) {
                     $dangyuan->video = $request->key;
-                    $hls_file = config('filesystems.disks.qiniu.bucket').':hls_'.$request->key;
+                    $urls =  explode('/', $dangyuan->video);
+                    $urls[count($urls) - 1] = 'hls_'.$urls[count($urls) - 1];
+                    $hls_video = implode('/', $urls);
+
+                    $hls_file = config('filesystems.disks.qiniu.bucket').':'.$hls_video;
                     $fops = 'avthumb/m3u8/segtime/10/ab/128k/ar/44100/acodec/libfaac/r/30/vb/640k/vcodec/libx264/stripmeta/0/noDomain/1|saveas/'.base64_encode($hls_file);
                     $dangyuan->hls_id = $disk->persistentFop($request->key, $fops, 'dyxs_hls', true); 
                 }
@@ -224,7 +228,11 @@ class ProjectController extends Controller
                 $pos = strpos($file, 'video');
                 if ($pos !== false) {
                     $team->video = $request->key;
-                    $hls_file = config('filesystems.disks.qiniu.bucket').':hls_'.$request->key;
+                    $urls =  explode('/', $team->video);
+                    $urls[count($urls) - 1] = 'hls_'.$urls[count($urls) - 1];
+                    $hls_video = implode('/', $urls);
+                    
+                    $hls_file = config('filesystems.disks.qiniu.bucket').':'.$hls_video;
                     $fops = 'avthumb/m3u8/segtime/10/ab/128k/ar/44100/acodec/libfaac/r/30/vb/640k/vcodec/libx264/stripmeta/0/noDomain/1|saveas/'.base64_encode($hls_file);
                     $team->hls_id = $disk->persistentFop($request->key, $fops, 'dyxs_hls', true); 
                 }
