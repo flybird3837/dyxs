@@ -204,7 +204,7 @@ class ProjectController extends Controller
                 $pos = strpos($file, 'video');
                 if ($pos !== false) {
                     $dangyuan->video = $request->key;
-                    $urls =  explode('/', $dangyuan->video);
+                    $urls =  explode('/', $request->key);
                     $urls[count($urls) - 1] = 'hls_'.$urls[count($urls) - 1];
                     $hls_video = implode('/', $urls);
 
@@ -228,7 +228,7 @@ class ProjectController extends Controller
                 $pos = strpos($file, 'video');
                 if ($pos !== false) {
                     $team->video = $request->key;
-                    $urls =  explode('/', $team->video);
+                    $urls =  explode('/', $request->key);
                     $urls[count($urls) - 1] = 'hls_'.$urls[count($urls) - 1];
                     $hls_video = implode('/', $urls);
                     
